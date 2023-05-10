@@ -10,7 +10,10 @@ import lombok.NoArgsConstructor;
 @Getter
 public class AddStationRequest {
 
+    private Boolean isEnd;
     private String lineName;
-    private String frontStationName;
-    private String backStationName;
+    private String frontStation;
+    private String backStation;
+    private String stationName;
+    private Long distance;
 }

@@ -9,11 +9,11 @@ public class InterStationEntity {
 
     private final Long id;
     private final Long lineId;
-    private final Long startStationId;
-    private final Long endStationId;
+    private final Long frontStationId;
+    private final Long backStationId;
     private final long distance;
 
-    public InterStationEntity(Long lineId, Long startStationId, Long endStationId, long distance) {
-        this(null, lineId, startStationId, endStationId, distance);
+    public InterStationEntity(final Long lineId, final Long frontStationId, final Long backStationId, final long distance) {
+        this(null, lineId, frontStationId, backStationId, distance);
     }
 }

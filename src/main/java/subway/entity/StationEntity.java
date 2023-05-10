@@ -3,6 +3,7 @@ package subway.entity;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import subway.domain.Station;
 
 @Getter
 @RequiredArgsConstructor
@@ -13,6 +14,10 @@ public class StationEntity {
 
     public StationEntity(final String name) {
         this(null, name);
+    }
+
+    public static StationEntity from(final Station station) {
+        return new StationEntity(station.getName());
     }
 
     @Override

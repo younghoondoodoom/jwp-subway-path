@@ -1,45 +1,41 @@
 package subway.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
-import subway.entity.StationEntity;
+import org.springframework.transaction.annotation.Transactional;
+import subway.controller.dto.AddStationRequest;
+import subway.controller.dto.AddStationResponse;
+import subway.domain.Station;
+import subway.repository.InterStationRepository;
+import subway.repository.LineRepository;
+import subway.repository.StationRepository;
 
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class StationService {
 
-    private final StationDao stationDao;
+    private final StationRepository stationRepository;
+    private final LineRepository lineRepository;
+    private final InterStationRepository interStationRepository;
 
-    public StationService(final StationDao stationDao) {
-        this.stationDao = stationDao;
+    @Transactional
+    public AddStationResponse saveStation(final AddStationRequest addStationRequest) {
+//        final Line line = lineRepository.findByName(addStationRequest.getLineName());
+//        final Station frontStation = getStation(addStationRequest.getFrontStationName());
+//        final Station backStation = getStation(addStationRequest.getBackStationName());
+//        final InterStation existedInterStation = line.delete(backStation);
+//        interStationRepository.delete(existedInterStation);
+//        final InterStation interStation = line.addStation(frontStation, backStation,
+//            addStationRequest.getDistance(), existedInterStation);
+//        final Line update = lineRepository.update(line);
+//        final InterStation result = interStationRepository.save(interStation);
+//        return AddStationResponse.from(update);
+        return null;
     }
 
-    public StationResponse saveStation(final StationRequest stationRequest) {
-        final StationEntity stationEntity = stationDao.insert(
-            new StationEntity(stationRequest.getName()));
-        return StationResponse.of(stationEntity);
-    }
-
-    public StationResponse findStationResponseById(final Long id) {
-        return StationResponse.of(stationDao.findById(id));
-    }
-
-    public List<StationResponse> findAllStationResponses() {
-        final List<StationEntity> stationEntities = stationDao.findAll();
-
-        return stationEntities.stream()
-            .map(StationResponse::of)
-            .collect(Collectors.toList());
-    }
-
-    public void updateStation(final Long id, final StationRequest stationRequest) {
-        stationDao.update(new StationEntity(id, stationRequest.getName()));
-    }
-
-    public void deleteStationById(final Long id) {
-        stationDao.deleteById(id);
+    private Station getStation(final String name) {
+        return stationRepository.findByName(name)
+            .orElseGet(() -> stationRepository.save(new Station(name)));
     }
 }

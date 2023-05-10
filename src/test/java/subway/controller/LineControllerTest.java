@@ -17,14 +17,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import subway.controller.dto.LineRequest;
-import subway.controller.dto.LineResponse;
+import subway.controller.dto.AddLineRequest;
+import subway.controller.dto.AddLineResponse;
+import subway.controller.dto.InterStationResponse;
 import subway.service.LineService;
 
 @WebMvcTest
 class LineControllerTest {
 
-    private static final LineResponse LINE_RESPONSE = new LineResponse(1L, "name", "color");
+    private static final AddLineResponse LINE_RESPONSE = new AddLineResponse(1L, "name", "color",
+        new InterStationResponse(1L, 2L, 3L, 10L));
     @Autowired
     private MockMvc mockMvc;
 
@@ -37,24 +39,21 @@ class LineControllerTest {
     @Test
     void 라인을_추가한다() throws Exception {
         given(lineService.saveLine(any())).willReturn(LINE_RESPONSE);
-        final LineRequest lineRequest = new LineRequest("name", "color");
-        final String request = objectMapper.writeValueAsString(lineRequest);
+        final AddLineRequest addLineRequest = new AddLineRequest("name", "color",
+            "frontStationName", "backStationName", 10L);
+        final String request = objectMapper.writeValueAsString(addLineRequest);
 
-        final MvcResult result = mockMvc.perform(post("/lines")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(request))
-            .andDo(print())
-            .andExpect(status().isCreated())
-            .andReturn();
+        final MvcResult result = mockMvc.perform(
+                post("/lines").contentType(MediaType.APPLICATION_JSON).content(request)).andDo(print())
+            .andExpect(status().isCreated()).andReturn();
 
-        final LineResponse lineResponse = jsonToObject(result, LineResponse.class);
-        assertThat(lineResponse).usingRecursiveComparison().isEqualTo(LINE_RESPONSE);
+        final AddLineResponse addLineResponse = jsonToObject(result, AddLineResponse.class);
+        assertThat(addLineResponse).usingRecursiveComparison().isEqualTo(LINE_RESPONSE);
     }
 
     private <T> T jsonToObject(final MvcResult result, final Class<T> valueType)
         throws UnsupportedEncodingException, JsonProcessingException {
-        final String responseString = result.getResponse()
-            .getContentAsString();
+        final String responseString = result.getResponse().getContentAsString();
         return objectMapper.readValue(responseString, valueType);
     }
 }

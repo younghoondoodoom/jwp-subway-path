@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.controller.dto.LineRequest;
-import subway.controller.dto.LineResponse;
+import subway.controller.dto.AddLineRequest;
+import subway.controller.dto.AddLineResponse;
 import subway.service.LineService;
 
 @RequiredArgsConstructor
@@ -19,9 +19,10 @@ public class LineController {
     private final LineService lineService;
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody final LineRequest lineRequest) {
-        final LineResponse lineResponse = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId()))
-            .body(lineResponse);
+    public ResponseEntity<AddLineResponse> createLine(
+        @RequestBody final AddLineRequest addLineRequest) {
+        final AddLineResponse addLineResponse = lineService.saveLine(addLineRequest);
+        return ResponseEntity.created(URI.create("/lines/" + addLineResponse.getId()))
+            .body(addLineResponse);
     }
 }

@@ -7,8 +7,8 @@ import subway.exception.BusinessException;
 
 class InterStationTest {
 
-    private final Station start = new Station("test1");
-    private final Station end = new Station("test2");
+    private final Station front = new Station("test1");
+    private final Station back = new Station("test2");
 
     @Test
     public void 역사이의_길이는_양수이어야한다() {
@@ -17,8 +17,8 @@ class InterStationTest {
 
         //when
         //then
-        assertThatThrownBy(() -> new InterStation(start, end, value))
+        assertThatThrownBy(() -> new InterStation(front, back, value))
             .isInstanceOf(BusinessException.class);
     }
-    
+
 }

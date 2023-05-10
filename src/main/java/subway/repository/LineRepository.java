@@ -1,6 +1,7 @@
 package subway.repository;
 
 import java.util.List;
+import java.util.Optional;
 import subway.domain.Line;
 
 public interface LineRepository {
@@ -12,4 +13,8 @@ public interface LineRepository {
     Line update(Line line);
 
     void deleteById(long id);
+
+    Optional<Line> findByName(String lineName);
+
+    void remove(Line line);
 }

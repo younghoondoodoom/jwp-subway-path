@@ -1,6 +1,7 @@
 package subway.repository;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
@@ -32,6 +33,16 @@ public class LineRepositoryImpl implements LineRepository {
 
     @Override
     public void deleteById(final long id) {
+
+    }
+
+    @Override
+    public Optional<Line> findByName(final String lineName) {
+        return null;
+    }
+
+    @Override
+    public void remove(final Line line) {
 
     }
 }
