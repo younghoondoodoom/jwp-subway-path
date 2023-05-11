@@ -34,15 +34,15 @@ class Line1ServiceTest {
     public void 호선을_생성한다() {
         //given
         final AddLineRequest addLineRequest = new AddLineRequest("name", "color",
-            "frontStationName", "backStationName", 10L);
+                "frontStationName", "backStationName", 10L);
         final Station frontStation = new Station(1L, addLineRequest.getFrontStationName());
         final Station backStation = new Station(2L, addLineRequest.getBackStationName());
         final InterStation interStation = new InterStation(1L, frontStation, backStation,
-            addLineRequest.getDistance());
+                addLineRequest.getDistance());
         final Line1 savedLine1 = new Line1(1L, "name", "color", List.of(interStation));
         given(lineRepository.save(any())).willReturn(savedLine1);
         given(stationRepository.findByName(any())).willReturn(Optional.of(frontStation),
-            Optional.of(backStation));
+                Optional.of(backStation));
 
         //when
         final AddLineResponse addLineResponse = lineService1.saveLine(addLineRequest);
@@ -50,7 +50,7 @@ class Line1ServiceTest {
         //then
         assertThat(addLineResponse.getName()).isEqualTo(savedLine1.getName());
         assertThat(addLineResponse).usingRecursiveComparison().isEqualTo(
-            new AddLineResponse(1L, "name", "color", InterStationResponse.from(interStation)));
+                new AddLineResponse(1L, "name", "color", InterStationResponse.from(interStation)));
     }
 
     @Test

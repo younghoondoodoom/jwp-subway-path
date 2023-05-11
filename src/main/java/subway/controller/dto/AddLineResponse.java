@@ -18,6 +18,6 @@ public class AddLineResponse {
 
     public static AddLineResponse from(final Line line) {
         return new AddLineResponse(line.getId(), line.getName(), line.getColor(),
-            InterStationResponse.from(line.getFirstInterStation()));
+                InterStationResponse.from(line.getFirstInterStation()));
     }
 }

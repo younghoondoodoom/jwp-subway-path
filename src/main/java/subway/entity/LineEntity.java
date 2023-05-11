@@ -22,9 +22,9 @@ public class LineEntity {
 
     public static LineEntity from(final Line line) {
         final List<InterStationEntity> interStationEntities = line.getInterStations()
-            .stream()
-            .map(InterStationEntity::from)
-            .collect(Collectors.toUnmodifiableList());
+                .stream()
+                .map(interStation -> InterStationEntity.of(interStation, line.getId()))
+                .collect(Collectors.toUnmodifiableList());
         return new LineEntity(line.getName(), line.getColor(), interStationEntities);
     }
 
@@ -38,7 +38,7 @@ public class LineEntity {
         }
         final LineEntity lineEntity = (LineEntity) o;
         return Objects.equals(id, lineEntity.id) && Objects.equals(name, lineEntity.name)
-            && Objects.equals(color, lineEntity.color);
+                && Objects.equals(color, lineEntity.color);
     }
 
     @Override

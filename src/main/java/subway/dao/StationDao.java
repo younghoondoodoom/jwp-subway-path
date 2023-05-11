@@ -17,17 +17,17 @@ public class StationDao {
     private final SimpleJdbcInsert insertAction;
 
     private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
-        new StationEntity(
-            rs.getLong("id"),
-            rs.getString("name")
-        );
+            new StationEntity(
+                    rs.getLong("id"),
+                    rs.getString("name")
+            );
 
 
     public StationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         insertAction = new SimpleJdbcInsert(dataSource)
-            .withTableName("station")
-            .usingGeneratedKeyColumns("id");
+                .withTableName("station")
+                .usingGeneratedKeyColumns("id");
     }
 
     public StationEntity insert(final StationEntity stationEntity) {
@@ -37,23 +37,7 @@ public class StationDao {
     }
 
     public List<StationEntity> findAll() {
-        final String sql = "select * from STATION";
+        final String sql = "select id,name from STATION";
         return jdbcTemplate.query(sql, rowMapper);
-    }
-
-    public StationEntity findById(final Long id) {
-        final String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
-    public void update(final StationEntity newStationEntity) {
-        final String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql,
-            newStationEntity.getName(), newStationEntity.getId());
-    }
-
-    public void deleteById(final Long id) {
-        final String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
     }
 }

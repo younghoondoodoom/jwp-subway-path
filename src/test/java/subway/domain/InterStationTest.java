@@ -18,7 +18,7 @@ class InterStationTest {
         //when
         //then
         assertThatThrownBy(() -> new InterStation(front, back, value))
-            .isInstanceOf(BusinessException.class);
+                .isInstanceOf(BusinessException.class);
     }
 
 }

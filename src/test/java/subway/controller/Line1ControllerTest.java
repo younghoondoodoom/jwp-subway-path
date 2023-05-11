@@ -26,7 +26,7 @@ import subway.service.LineService1;
 class Line1ControllerTest {
 
     private static final AddLineResponse LINE_RESPONSE = new AddLineResponse(1L, "name", "color",
-        new InterStationResponse(1L, 2L, 3L, 10L));
+            new InterStationResponse(1L, 2L, 3L, 10L));
     @Autowired
     private MockMvc mockMvc;
 
@@ -40,19 +40,19 @@ class Line1ControllerTest {
     void 라인을_추가한다() throws Exception {
         given(lineService1.saveLine(any())).willReturn(LINE_RESPONSE);
         final AddLineRequest addLineRequest = new AddLineRequest("name", "color",
-            "frontStationName", "backStationName", 10L);
+                "frontStationName", "backStationName", 10L);
         final String request = objectMapper.writeValueAsString(addLineRequest);
 
         final MvcResult result = mockMvc.perform(
-                post("/lines").contentType(MediaType.APPLICATION_JSON).content(request)).andDo(print())
-            .andExpect(status().isCreated()).andReturn();
+                        post("/lines").contentType(MediaType.APPLICATION_JSON).content(request)).andDo(print())
+                .andExpect(status().isCreated()).andReturn();
 
         final AddLineResponse addLineResponse = jsonToObject(result, AddLineResponse.class);
         assertThat(addLineResponse).usingRecursiveComparison().isEqualTo(LINE_RESPONSE);
     }
 
     private <T> T jsonToObject(final MvcResult result, final Class<T> valueType)
-        throws UnsupportedEncodingException, JsonProcessingException {
+            throws UnsupportedEncodingException, JsonProcessingException {
         final String responseString = result.getResponse().getContentAsString();
         return objectMapper.readValue(responseString, valueType);
     }

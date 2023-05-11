@@ -36,6 +36,6 @@ public class StationService {
 
     private Station getStation(final String name) {
         return stationRepository.findByName(name)
-            .orElseGet(() -> stationRepository.save(new Station(name)));
+                .orElseGet(() -> stationRepository.save(new Station(name)));
     }
 }

@@ -18,7 +18,7 @@ class StationTest {
         //when
         //then
         assertThatThrownBy(() -> new Station(value))
-            .isInstanceOf(BusinessException.class);
+                .isInstanceOf(BusinessException.class);
     }
 
     @Test
@@ -29,6 +29,6 @@ class StationTest {
         //when
         //then
         assertThatThrownBy(() -> new Station(value))
-            .isInstanceOf(BusinessException.class);
+                .isInstanceOf(BusinessException.class);
     }
 }

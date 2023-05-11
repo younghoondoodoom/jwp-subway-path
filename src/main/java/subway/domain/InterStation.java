@@ -12,7 +12,7 @@ public class InterStation {
     private final long distance;
 
     public InterStation(final Long id, final Station firstStation, final Station secondStation,
-        final long distance) {
+            final long distance) {
         validateDistance(distance);
         this.id = id;
         this.firstStation = firstStation;
@@ -32,7 +32,7 @@ public class InterStation {
 
     public boolean containsAll(final Station frontStation, final Station backStation) {
         return firstStation.equals(frontStation) && secondStation.equals(backStation)
-            || firstStation.equals(backStation) && secondStation.equals(firstStation);
+                || firstStation.equals(backStation) && secondStation.equals(firstStation);
     }
 
     public boolean contains(final Station station) {

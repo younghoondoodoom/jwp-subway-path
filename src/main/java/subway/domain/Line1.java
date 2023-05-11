@@ -32,9 +32,9 @@ public class Line1 {
     }
 
     public InterStation initStation(final Station frontStationName, final Station backStationName,
-        final long distance) {
+            final long distance) {
         final InterStation interStation = new InterStation(frontStationName, backStationName,
-            distance);
+                distance);
         interStations.add(interStation);
         return interStation;
     }
@@ -45,9 +45,9 @@ public class Line1 {
 
     public InterStation delete(final Station existedFrontStation, final Station existedBackStation) {
         final InterStation removedInterStation = interStations.stream()
-            .filter(interStation -> interStation.containsAll(existedFrontStation, existedBackStation))
-            .findAny()
-            .orElseThrow(() -> new BusinessException("존재하지 않는 역 정보입니다."));
+                .filter(interStation -> interStation.containsAll(existedFrontStation, existedBackStation))
+                .findAny()
+                .orElseThrow(() -> new BusinessException("존재하지 않는 역 정보입니다."));
         interStations.remove(removedInterStation);
         return removedInterStation;
     }
