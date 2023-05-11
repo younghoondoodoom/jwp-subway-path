@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -16,7 +17,7 @@ public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert lineInsertAction;
-    private final SimpleJdbcInsert stationInsertAction;
+    private final SimpleJdbcInsert interStationInsertAction;
     private final RowMapper<Optional<LineEntity>> optionalRowMapper = (rs, rowNum) -> {
         final Long id = rs.getLong("id");
         final String name = rs.getString("name");
@@ -37,9 +38,9 @@ public class LineDao {
                 .withTableName("line")
                 .usingColumns("name", "color")
                 .usingGeneratedKeyColumns("id");
-        stationInsertAction = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("station")
-                .usingColumns("name")
+        interStationInsertAction = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("INTERSTATION")
+                .usingColumns("line_id", "start_station_id", "end_station_id", "distance")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -56,9 +57,10 @@ public class LineDao {
                     stationParam.put("line_id", lineId);
                     stationParam.put("start_station_id", interStationEntity.getFrontStationId());
                     stationParam.put("end_station_id", interStationEntity.getBackStationId());
+                    stationParam.put("distance", interStationEntity.getDistance());
                     return stationParam;
                 }).toArray(Map[]::new);
-        stationInsertAction.executeBatch(interStationParams);
+        interStationInsertAction.executeBatch(interStationParams);
 
         return findById(lineId).get();
     }
@@ -79,6 +81,10 @@ public class LineDao {
 
     public Optional<LineEntity> findByName(final String name) {
         final String sql = "SELECT line.id, line.name,line.color FROM LINE WHERE name = ?";
-        return jdbcTemplate.queryForObject(sql, optionalRowMapper, name);
+        try {
+            return jdbcTemplate.queryForObject(sql, optionalRowMapper, name);
+        } catch (final EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 }

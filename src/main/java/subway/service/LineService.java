@@ -25,13 +25,13 @@ public class LineService {
     private final StationRepository stationRepository;
 
     public AddLineResponse addLine(final AddLineRequest request) {
-        validateExistLine(request);
+        validateEmptyLine(request);
         final Station firstStation = getStation(request.getFrontStationName());
         final Station secondStation = getStation(request.getBackStationName());
         final Line line = new Line(request.getName(), request.getColor());
         line.addInitialStation(firstStation, secondStation, request.getDistance());
-        lineRepository.save(line);
-        return AddLineResponse.from(line);
+        final Line result = lineRepository.save(line);
+        return AddLineResponse.from(result);
     }
 
     public Station getStation(final String name) {
@@ -39,7 +39,7 @@ public class LineService {
                 .orElseGet(() -> stationRepository.save(new Station(name)));
     }
 
-    private void validateExistLine(final AddLineRequest request) {
+    private void validateEmptyLine(final AddLineRequest request) {
         final Optional<Line> existLine = lineRepository.findByName(request.getName());
         if (existLine.isPresent()) {
             throw new BusinessException("이미 존재하는 라인입니다");
@@ -74,6 +74,7 @@ public class LineService {
                 lineRepository.delete(line);
             }
         }
+        stationRepository.delete(existStation);
     }
 
     public List<LineResponse> getLines() {

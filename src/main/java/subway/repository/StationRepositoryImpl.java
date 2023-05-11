@@ -24,4 +24,9 @@ public class StationRepositoryImpl implements StationRepository {
         return stationDao.findByName(name)
                 .map(StationEntity::toStation);
     }
+
+    @Override
+    public void delete(final Station existStation) {
+        stationDao.delete(existStation.getId());
+    }
 }

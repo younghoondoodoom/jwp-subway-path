@@ -8,4 +8,6 @@ public interface StationRepository {
     Station save(final Station station);
 
     Optional<Station> findByName(String name);
+
+    void delete(Station existStation);
 }

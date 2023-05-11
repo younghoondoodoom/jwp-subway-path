@@ -17,11 +17,12 @@ public class InterStationDao {
     public InterStationDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("INTERSTATION")
                 .usingGeneratedKeyColumns("id");
     }
 
     public void deleteAllByLineId(final long lineId) {
-        final String sql = "delete from INTER_STATION where line_id = ?";
+        final String sql = "delete from INTERSTATION where line_id = ?";
         jdbcTemplate.update(sql, lineId);
     }
 
@@ -39,7 +40,7 @@ public class InterStationDao {
     }
 
     public List<InterStationEntity> findAll() {
-        final String sql = "select id,line_id,start_station_id,end_station_id,distance from INTER_STATION";
+        final String sql = "select id,line_id,start_station_id,end_station_id,distance from INTERSTATION";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             final long id = rs.getLong("id");
             final long lineId = rs.getLong("line_id");

@@ -30,7 +30,7 @@ public class Line {
     }
 
     private void validateEmpty() {
-        if (interStations.isEmpty()) {
+        if (!interStations.isEmpty()) {
             throw new BusinessException("비어있지 않습니다");
         }
     }
@@ -70,7 +70,7 @@ public class Line {
     }
 
     private void validateNotEmpty() {
-        if (!interStations.isEmpty()) {
+        if (interStations.isEmpty()) {
             throw new BusinessException("비어있는 라인입니다");
         }
     }
@@ -99,8 +99,12 @@ public class Line {
         final InterStation nextInterStation = interStations.get(index + 1);
         interStations.remove(index);
         interStations.remove(index + 1);
+        final long distance = interStation.getDistance() + nextInterStation.getDistance();
+        if (distance <= 0) {
+            throw new BusinessException("구간의 길이가 0보다 작습니다");
+        }
         interStations.add(index, new InterStation(interStation.getFirstStation(), nextInterStation.getSecondStation(),
-                interStation.getDistance() + nextInterStation.getDistance()));
+                distance));
     }
 
     public boolean isEmpty() {

@@ -1,6 +1,7 @@
 package subway.controller;
 
 import java.net.URI;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +23,7 @@ public class StationController {
     private final LineService lineService;
 
     @PostMapping
-    public ResponseEntity<AddStationResponse> addStation(@RequestBody final AddStationRequest request) {
+    public ResponseEntity<AddStationResponse> addStation(@RequestBody @Valid final AddStationRequest request) {
         final AddStationResponse addStationResponse = lineService.addStation(request);
         final URI uri = URI.create("/stations/" + addStationResponse.getStationId());
         return ResponseEntity.created(uri)
@@ -30,7 +31,7 @@ public class StationController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteStation(@RequestBody final RemoveStationRequest request) {
+    public ResponseEntity<Void> deleteStation(@RequestBody @Valid final RemoveStationRequest request) {
         lineService.removeStation(request);
         return ResponseEntity.noContent()
                 .build();
