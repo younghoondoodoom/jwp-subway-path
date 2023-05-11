@@ -28,6 +28,14 @@ public class LineEntity {
         return new LineEntity(line.getName(), line.getColor(), interStationEntities);
     }
 
+    public void addInterStationEntity(final InterStationEntity interStationEntity) {
+        interStationEntities.add(interStationEntity);
+    }
+
+    public void addInterStationEntities(final List<InterStationEntity> interStationEntities) {
+        interStationEntities.addAll(interStationEntities);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
