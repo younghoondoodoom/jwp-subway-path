@@ -20,10 +20,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import subway.controller.dto.AddLineRequest;
 import subway.controller.dto.AddLineResponse;
 import subway.controller.dto.InterStationResponse;
-import subway.service.LineService;
+import subway.service.LineService1;
 
 @WebMvcTest
-class LineControllerTest {
+class Line1ControllerTest {
 
     private static final AddLineResponse LINE_RESPONSE = new AddLineResponse(1L, "name", "color",
         new InterStationResponse(1L, 2L, 3L, 10L));
@@ -34,11 +34,11 @@ class LineControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private LineService lineService;
+    private LineService1 lineService1;
 
     @Test
     void 라인을_추가한다() throws Exception {
-        given(lineService.saveLine(any())).willReturn(LINE_RESPONSE);
+        given(lineService1.saveLine(any())).willReturn(LINE_RESPONSE);
         final AddLineRequest addLineRequest = new AddLineRequest("name", "color",
             "frontStationName", "backStationName", 10L);
         final String request = objectMapper.writeValueAsString(addLineRequest);

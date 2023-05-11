@@ -2,18 +2,21 @@ package subway.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import subway.domain.InterStation;
 
 @Getter
 @RequiredArgsConstructor
 public class InterStationEntity {
 
     private final Long id;
-    private final Long lineId;
-    private final Long frontStationId;
-    private final Long backStationId;
+    private final StationEntity frontStation;
+    private final StationEntity backStation;
     private final long distance;
 
-    public InterStationEntity(final Long lineId, final Long frontStationId, final Long backStationId, final long distance) {
-        this(null, lineId, frontStationId, backStationId, distance);
+    public static InterStationEntity from(final InterStation interStation) {
+        return new InterStationEntity(interStation.getId(),
+            StationEntity.from(interStation.getFirstStation()),
+            StationEntity.from(interStation.getSecondStation()),
+            interStation.getDistance());
     }
 }

@@ -13,6 +13,8 @@ public interface InterStationRepository {
 
     void addAll(InterStation... interStations);
 
+    void addAll(List<InterStation> interStations);
+
     List<InterStation> findAllByName(String stationName);
 
     void deleteAll(List<InterStation> existedInterStations);

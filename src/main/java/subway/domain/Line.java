@@ -2,14 +2,13 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
-import lombok.AllArgsConstructor;
+import java.util.Optional;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import subway.exception.BusinessException;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Line {
 
     private final Long id;
@@ -25,70 +24,86 @@ public class Line {
         this(id, name, color, new ArrayList<>());
     }
 
-    public InterStation getFirstInterStation() {
+    public void addInitialStation(final Station first, final Station second, final long distance) {
+        validateEmpty();
+        interStations.add(new InterStation(first, second, distance));
+    }
+
+    private void validateEmpty() {
         if (interStations.isEmpty()) {
-            throw new BusinessException(name + "호선에 역이 없습니다.");
+            throw new BusinessException("비어있지 않습니다");
         }
+    }
+
+    public void addStationEnd(final Station exist, final Station station, final long distance) {
+        validateNotEmpty();
+        final InterStation firstInterStation = interStations.get(0);
+        final Station firstStation = firstInterStation.getFirstStation();
+        if (firstStation.equals(exist)) {
+            interStations.add(0, new InterStation(station, firstStation, distance));
+            return;
+        }
+        final InterStation lastInterStation = interStations.get(interStations.size() - 1);
+        final Station lastStation = lastInterStation.getSecondStation();
+        if (lastStation.equals(exist)) {
+            interStations.add(new InterStation(exist, station, distance));
+            return;
+        }
+        throw new BusinessException("존재하지 않는 역입니다");
+    }
+
+    public void addStationBetween(final Station first, final Station second, final Station between,
+        final long distance) {
+        validateNotEmpty();
+        final InterStation targetInterStation = interStations.stream()
+            .filter(it -> it.getFirstStation().equals(first))
+            .filter(it -> it.getSecondStation().equals(second))
+            .findAny()
+            .orElseThrow(() -> new BusinessException("존재하지 않는 구간입니다"));
+        final int targetIndex = interStations.indexOf(targetInterStation);
+        final Station firstStation = targetInterStation.getFirstStation();
+        final Station secondStation = targetInterStation.getSecondStation();
+        interStations.remove(targetIndex);
+        interStations.add(targetIndex,
+            new InterStation(between, secondStation, targetInterStation.getDistance() - distance));
+        interStations.add(targetIndex, new InterStation(firstStation, between, distance));
+    }
+
+    private void validateNotEmpty() {
+        if (!interStations.isEmpty()) {
+            throw new BusinessException("비어있는 라인입니다");
+        }
+    }
+
+    public InterStation getFirstInterStation() {
         return interStations.get(0);
     }
 
-    public InterStation initStation(final Station frontStationName, final Station backStationName,
-        final long distance) {
-        final InterStation interStation = new InterStation(frontStationName, backStationName,
-            distance);
-        interStations.add(interStation);
-        return interStation;
-    }
-
-    private InterStation removeExistedInterStation(
-        final Predicate<InterStation> interStationPredicate) {
-        final InterStation existedInterStation = interStations.stream()
-            .filter(interStationPredicate)
-            .findAny()
-            .orElse(null);
-        interStations.remove(existedInterStation);
-        return existedInterStation;
-    }
-
-    public void addInterStations(final List<InterStation> interStations) {
-        this.interStations.addAll(interStations);
-    }
-
-    public void add(final InterStation interStation) {
-        interStations.add(interStation);
-    }
-
-    public InterStation delete(final Station existedFrontStation, final Station existedBackStation) {
-        final InterStation removedInterStation = interStations.stream()
-            .filter(interStation -> interStation.containsAll(existedFrontStation, existedBackStation))
-            .findAny()
-            .orElseThrow(() -> new BusinessException("존재하지 않는 역 정보입니다."));
-        interStations.remove(removedInterStation);
-        return removedInterStation;
-    }
-
-    public boolean contains(final InterStation interStation) {
-        return interStations.contains(interStation);
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
+    public void deleteStation(final Station existStation) {
+        if (interStations.get(0).getFirstStation().equals(existStation)) {
+            interStations.remove(0);
+            return;
         }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
+        if (interStations.get(interStations.size() - 1).getSecondStation().equals(existStation)) {
+            interStations.remove(interStations.size() - 1);
+            return;
         }
-        final Line line = (Line) o;
-        return Objects.equals(getId(), line.getId());
+        final Optional<InterStation> optionalInterStation = interStations.stream()
+            .filter(it -> it.contains(existStation))
+            .findFirst();
+        if (optionalInterStation.isEmpty()) {
+            return;
+        }
+        final InterStation interStation = optionalInterStation.get();
+        final int index = interStations.indexOf(interStation);
+        final InterStation nextInterStation = interStations.get(index + 1);
+        interStations.remove(index);
+        interStations.remove(index + 1);
+        interStations.add(index, new InterStation(interStation.getFirstStation(), nextInterStation.getSecondStation(),
+            interStation.getDistance() + nextInterStation.getDistance()));
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
-    }
-
-    public boolean interStationCountEquals(final int size) {
-        return interStations.size() == size;
+    public boolean isEmpty() {
+        return interStations.isEmpty();
     }
 }

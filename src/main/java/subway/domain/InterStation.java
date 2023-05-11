@@ -35,10 +35,10 @@ public class InterStation {
             || firstStation.equals(backStation) && secondStation.equals(firstStation);
     }
 
-    public Station findNotEqualStation(final Station station) {
-        if (firstStation.equals(station)) {
-            return secondStation;
+    public boolean contains(final Station station) {
+        if (station == null) {
+            return false;
         }
-        return firstStation;
+        return firstStation.equals(station) || secondStation.equals(station);
     }
 }
