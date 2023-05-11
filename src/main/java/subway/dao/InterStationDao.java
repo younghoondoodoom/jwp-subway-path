@@ -3,18 +3,22 @@ package subway.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.InterStationEntity;
 
-@RequiredArgsConstructor
 @Repository
 public class InterStationDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
+
+    public InterStationDao(final JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .usingGeneratedKeyColumns("id");
+    }
 
     public void deleteAllByLineId(final long lineId) {
         final String sql = "delete from INTER_STATION where line_id = ?";

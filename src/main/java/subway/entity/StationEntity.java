@@ -20,6 +20,10 @@ public class StationEntity {
         return new StationEntity(station.getName());
     }
 
+    public Station toStation() {
+        return new Station(id, name);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

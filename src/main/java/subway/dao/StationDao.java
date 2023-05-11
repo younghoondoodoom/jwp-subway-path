@@ -1,6 +1,7 @@
 package subway.dao;
 
 import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -21,7 +22,11 @@ public class StationDao {
                     rs.getLong("id"),
                     rs.getString("name")
             );
-
+    private final RowMapper<Optional<StationEntity>> optionalRowMapper = (rs, rowNum) ->
+            Optional.of(new StationEntity(
+                    rs.getLong("id"),
+                    rs.getString("name")
+            ));
 
     public StationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -39,5 +44,10 @@ public class StationDao {
     public List<StationEntity> findAll() {
         final String sql = "select id,name from STATION";
         return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public Optional<StationEntity> findByName(final String name) {
+        final String sql = "select id,name from STATION where name = ?";
+        return jdbcTemplate.queryForObject(sql, optionalRowMapper, name);
     }
 }

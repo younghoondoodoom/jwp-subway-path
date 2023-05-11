@@ -21,6 +21,7 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     public Optional<Station> findByName(final String name) {
-        return Optional.empty();
+        return stationDao.findByName(name)
+                .map(StationEntity::toStation);
     }
 }
